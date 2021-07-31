@@ -1,16 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class PlayerStatesController : MonoBehaviour
+public class PlayerStatesSwitcher : MonoBehaviour
 {
+    public UnityEvent<PlayerState> StateSwitch;
     private PlayerState _currentPlayerState;
 
     private void Start()
     {
-        _currentPlayerState = PlayerState.PlayMode;
+        StateSwitch.AddListener(OnStateSwitch);
+        SetCurrentPlayerState(PlayerState.PlayMode);
     }
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            SetCurrentPlayerState(PlayerState.InventoryMode);
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            SetCurrentPlayerState(PlayerState.PlayMode);
+        }
+    }
     public PlayerState GetCurrentPlayerState()
     {
         return _currentPlayerState;
@@ -18,10 +31,11 @@ public class PlayerStatesController : MonoBehaviour
     public void SetCurrentPlayerState(PlayerState playerState)
     {
         _currentPlayerState = playerState;
+        StateSwitch.Invoke(_currentPlayerState);
     }
-    private void Update()
+    private void OnStateSwitch(PlayerState playerState)
     {
-        switch (_currentPlayerState)
+        switch (playerState)
         {
             case PlayerState.InventoryMode:
                 ShowCursor();
@@ -36,7 +50,7 @@ public class PlayerStatesController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-    private void ShowCursor() 
+    private void ShowCursor()
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;

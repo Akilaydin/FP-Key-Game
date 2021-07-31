@@ -14,21 +14,37 @@ public class PlayerMovement : MonoBehaviour
     private float sprintMultiplier = 1.5f;
 
     private CharacterController _characterController;
+    private bool _canMove = true;
     private void Start()
     {
         _characterController = GetComponent<CharacterController>();
     }
     private void Update()
     {
-        Vector3 movement = transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal");
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (_canMove == true)
         {
-            _characterController.Move(movement * playerSpeed * sprintMultiplier * Time.deltaTime);
+            Vector3 movement = transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal");
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                _characterController.Move(movement * playerSpeed * sprintMultiplier * Time.deltaTime);
+            }
+            else
+            {
+                _characterController.Move(movement * playerSpeed * Time.deltaTime);
+            }
+            transform.Rotate(0, _turnSpeed * Input.GetAxis("Mouse X"), 0);
         }
-        else
+    }
+    public void OnStateSwitch(PlayerState playerState)
+    {
+        switch (playerState)
         {
-            _characterController.Move(movement * playerSpeed * Time.deltaTime);
+            case PlayerState.InventoryMode:
+                _canMove = false;
+                break;
+            case PlayerState.PlayMode:
+                _canMove = true;
+                break;
         }
-        transform.Rotate(0, _turnSpeed * Input.GetAxis("Mouse X"), 0);
     }
 }
