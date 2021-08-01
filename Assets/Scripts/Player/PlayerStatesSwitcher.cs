@@ -33,6 +33,18 @@ public class PlayerStatesSwitcher : MonoBehaviour
         _currentPlayerState = playerState;
         StateSwitch.Invoke(_currentPlayerState);
     }
+    public void SwitchState()
+    {
+        switch (_currentPlayerState)
+        {
+            case PlayerState.InventoryMode:
+                SetCurrentPlayerState(PlayerState.PlayMode);
+                break;
+            case PlayerState.PlayMode:
+                SetCurrentPlayerState(PlayerState.InventoryMode);
+                break;
+        }
+    }
     private void OnStateSwitch(PlayerState playerState)
     {
         switch (playerState)

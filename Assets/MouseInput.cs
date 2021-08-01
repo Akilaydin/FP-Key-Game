@@ -17,7 +17,6 @@ public class MouseInput : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && _canSelect == true)
         {
-            Debug.Log(_canSelect);
             PointerEventData pointerEventData = new PointerEventData(null);
             pointerEventData.position = Input.mousePosition;
             List<RaycastResult> results = new List<RaycastResult>();
@@ -27,8 +26,8 @@ public class MouseInput : MonoBehaviour
             {
                 if (results[0].gameObject.GetComponent<Key>())
                 {
-                    GameObject card = results[0].gameObject;
-                    KeySelected.Invoke(card);
+                    GameObject key = results[0].gameObject;
+                    KeySelected.Invoke(key);
                 }
             }
         }

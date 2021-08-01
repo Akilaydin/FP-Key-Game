@@ -7,9 +7,11 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-    public UnityEvent<GameObject> ItemAdded;
+    public UnityEvent ItemAdded;
     public UnityEvent ItemRemoved;
-
+    [Range(0.01f,5f)]
+    [SerializeField]
+    private float _hotbarItemTextureScale = 0.7f;
     [SerializeField]
     private Transform _hotbar;
 
@@ -18,7 +20,7 @@ public class Inventory : MonoBehaviour
     private void Start()
     {
         _inventoryObjects = new List<GameObject>();
-        ItemAdded.AddListener(AddItemToHotbar);
+        ItemAdded.AddListener(RefreshHotbar);
         ItemRemoved.AddListener(RefreshHotbar);
     }
 
@@ -29,15 +31,18 @@ public class Inventory : MonoBehaviour
 
     public void AddKeyToInventory(GameObject inventoryItem)
     {
+        
         if (_inventoryObjects.Contains(inventoryItem) == false)
         {
             inventoryItem.AddComponent<Image>().sprite = inventoryItem.GetComponent<Key>().GetKeyTexture();
+            inventoryItem.GetComponent<RectTransform>().localScale = new Vector3(_hotbarItemTextureScale,_hotbarItemTextureScale,_hotbarItemTextureScale);
+            inventoryItem.GetComponent<RectTransform>().rotation = Quaternion.identity;
             _inventoryObjects.Add(inventoryItem);
-            ItemAdded.Invoke(inventoryItem);
+            ItemAdded.Invoke();
         }
         else
         {
-            Debug.Log("The key already in inventory");
+            Debug.Log(inventoryItem + " is already in inventory");
         }
     }
     public void RemoveKeyFromInventory(GameObject inventoryItem)
@@ -50,9 +55,13 @@ public class Inventory : MonoBehaviour
     }
     private void RefreshHotbar()
     {
+        
         foreach (GameObject inventoryObject in _inventoryObjects)
         {
-            Instantiate(inventoryObject, _hotbar);
+            if (inventoryObject != null)
+            {
+                AddItemToHotbar(inventoryObject);
+            }
         }
     }
 }

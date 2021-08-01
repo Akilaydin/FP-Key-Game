@@ -21,7 +21,9 @@ public class TakeItems : MonoBehaviour
                 GameObject takable = raycastHit.transform.gameObject;
                 if (takable.GetComponent<Key>() != null)
                 {
+                    DestroyImmediate(takable.GetComponent<Rigidbody>());
                     _inventory.AddKeyToInventory(takable);
+                    
                     Destroy(takable);
                 }
             }
