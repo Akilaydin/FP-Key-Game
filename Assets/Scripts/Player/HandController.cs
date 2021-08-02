@@ -13,7 +13,7 @@ public class HandController : MonoBehaviour
     public void PlaceItemToHand(GameObject item)
     {
         
-        if (_currentItem != null)
+        if (GetCurrentItem() != null)
         {
             DropItemFromHand();
         }
@@ -25,19 +25,19 @@ public class HandController : MonoBehaviour
     }
     public void DestroyItemInHand()
     {
-        if (_currentItem != null)
+        if (GetCurrentItem() != null)
         {
-            Destroy(_currentItem);
             ItemRemoved.Invoke(_currentItem);
+            Destroy(_currentItem);
         }
     }
     public void DropItemFromHand()
     {
         if (_currentItem != null)
         {
-            _currentItem.transform.parent = null;
-            _currentItem.AddComponent<Rigidbody>();
             ItemRemoved.Invoke(_currentItem);
+            _currentItem.transform.parent = null;
+            _currentItem.AddComponent<Rigidbody>(); 
         }
     } 
     private GameObject PrepareItemToPlacing(GameObject item)
